@@ -1,6 +1,11 @@
 parallel_nodes(['linux && cura', 'windows && cura']) {
     timeout(time: 2, unit: "HOURS") {
 
+        environment {
+            PATH = '${env.CURA_ENVIRONMENT_PATH}/${branch}/bin:${PATH}'
+            CTEST_OUTPUT_ON_FAILURE = '1'
+        }
+
         // Prepare building
         stage('Prepare') {
             // Ensure we start with a clean build directory.
@@ -33,6 +38,9 @@ parallel_nodes(['linux && cura', 'windows && cura']) {
                     } catch(e) {
                         currentBuild.result = "UNSTABLE"
                     }
+                    echo "PATH = $PATH"
+                    echo "CTEST_OUTPUT_ON_FAILURE = $CTEST_OUTPUT_ON_FAILURE"
+                    sh "printenv"
                 }
             }
         }
